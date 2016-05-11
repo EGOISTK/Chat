@@ -9,7 +9,8 @@ public class ChatServer {
             ServerSocket ss = new ServerSocket(8888);
             while (true) {
                 Socket s = ss.accept();
-System.out.println("A client is connected!");
+                DataInputStream dis = new DataInputStream(s.getInputStream());
+                System.out.println(dis.readUTF());
             }
         } catch (IOException e) {
             e.printStackTrace();

@@ -5,27 +5,28 @@ import java.net.*;
 
 public class ChatClient extends Frame {
 
-    TextField nickName = new TextField();
-    Button launch = new Button("Launch");
-    TextField tf = new TextField();
-    TextArea ta = new TextArea();
+    private Socket s = null;
+    private String nickName = null;
+    private TextField launchName = new TextField();
+    private Button launch = new Button("Launch");
+    private TextField tf = new TextField();
+    private TextArea ta = new TextArea();
 
     public static void main(String[] args) {
         new ChatClient("ChatClient").launchFrame();
     }
 
-    public ChatClient(String s) {
+    private ChatClient(String s) {
         super(s);
     }
 
-    public void launchFrame() {
+    private void launchFrame() {
         setLocation(400, 150);
         setSize(500, 500);
-        add(nickName,BorderLayout.NORTH);
+        add(launchName,BorderLayout.NORTH);
         add(launch, BorderLayout.SOUTH);
         pack();
         launch.addActionListener(new LaunchListener());
-
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -38,25 +39,28 @@ public class ChatClient extends Frame {
         connect();
     }
 
-    public void connect() {
+    private void connect() {
         try {
-            Socket s = new Socket("127.0.0.1", 8888);
-        } catch (UnknownHostException e) {
-          e.printStackTrace();
+            s = new Socket("127.0.0.1", 8888);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    /*private class LaunchListener implements ActionListener {
-
-    }*/
-
     private class LaunchListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (nickName.getText() != null) {
-                remove(nickName);
+            if (!launchName.getText().equals("")) {
+                nickName = launchName.getText();
+                try {
+                    DataOutputStream dos = new DataOutputStream(s.getOutputStream());
+                    dos.writeUTF(nickName + " is launched!");
+                    dos.flush();
+                    dos.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+                remove(launchName);
                 remove(launch);
                 add(ta, BorderLayout.NORTH);
                 add(tf, BorderLayout.SOUTH);
@@ -69,8 +73,17 @@ public class ChatClient extends Frame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            ta.setText(tf.getText().trim());
+            String str = tf.getText().trim();
+            ta.setText(str);
             tf.setText("");
+            try {
+                DataOutputStream dos = new DataOutputStream(s.getOutputStream());
+                dos.writeUTF(str);
+                dos.flush();
+                dos.close();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
         }
 
     }
