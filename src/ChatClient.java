@@ -17,4 +17,5 @@ public class ChatClient extends Frame {
         pack();
         setVisible(true);
     }
+
 }
