@@ -1,4 +1,5 @@
 import java.io.DataInputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -17,9 +18,22 @@ public class ChatServer {
 
                 DataInputStream dis = new DataInputStream(s.getInputStream());
 
-                while (!s.isInputShutdown()) {
+                String nickName = dis.readUTF();
 
-                    System.out.println(dis.readUTF());
+                System.out.println(nickName  + " is online!");
+
+                while (s.isConnected()) {
+
+                    try {
+
+                        System.out.println(dis.readUTF());
+
+                    } catch (EOFException e) {
+
+                        System.out.println(nickName + " is offline!");
+                        break;
+
+                    }
 
                 }
 

@@ -95,13 +95,14 @@ public class ChatClient extends Frame {
             if (!launchName.getText().equals("")) {
 
                 nickName = launchName.getText();
+                setTitle("ChatClient-" + nickName);
                 connect();
 
                 try {
 
                     dos = new DataOutputStream(s.getOutputStream());
 
-                    dos.writeUTF(nickName + " is launched!");
+                    dos.writeUTF(nickName);
                     dos.flush();
 
                 } catch (IOException e1) {
