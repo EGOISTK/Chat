@@ -38,6 +38,7 @@ public class ChatServer {
                 }
 
                 dis.close();
+                s.close();
 
             }
 
