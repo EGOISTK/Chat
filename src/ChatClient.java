@@ -7,20 +7,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Date;
 
 public class ChatClient extends Frame {
 
     private Socket s = null;
+    private DataInputStream dis = null;
     private DataOutputStream dos = null;
-    private String nickName;
-
-    {
-        nickName = null;
-    }
-
+    private String nickName = null;
     private TextField launchName = new TextField();
     private Button launch = new Button("Launch");
     private TextField tf = new TextField();
@@ -60,7 +58,6 @@ public class ChatClient extends Frame {
 
         launch.addActionListener(new LaunchListener());
         tf.addActionListener(new TFListener());
-
         setVisible(true);
         setResizable(true);
 
@@ -109,6 +106,7 @@ public class ChatClient extends Frame {
 
                 try {
 
+
                     dos = new DataOutputStream(s.getOutputStream());
 
                     dos.writeUTF(nickName);
@@ -126,6 +124,9 @@ public class ChatClient extends Frame {
                 add(tf, BorderLayout.SOUTH);
                 pack();
 
+                new Thread(new ReceiveThread()).start();
+
+
             }
 
         }
@@ -137,7 +138,7 @@ public class ChatClient extends Frame {
         @Override
         public void actionPerformed(ActionEvent e) {
 
-            String str = tf.getText();
+            String str = tf.getText() + "   " + new Date();
 
             ta.setText(str);
             tf.setText("");
@@ -152,6 +153,31 @@ public class ChatClient extends Frame {
             } catch (IOException e1) {
 
                 e1.printStackTrace();
+
+            }
+
+        }
+
+    }
+
+    private class ReceiveThread implements Runnable{
+
+        @Override
+        public void run() {
+
+            try {
+
+                dis = new DataInputStream(s.getInputStream());
+
+                while (s.isConnected()) {
+
+                    ta.setText(ta.getText() + (ta.getText().equals("")?"":"\n") + dis.readUTF());
+
+                }
+
+            } catch (IOException e) {
+
+                e.printStackTrace();
 
             }
 
