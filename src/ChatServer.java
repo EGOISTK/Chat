@@ -31,14 +31,13 @@ public class ChatServer {
                     } catch (EOFException e) {
 
                         System.out.println(nickName + " is offline!");
+                        dis.close();
+                        s.close();
                         break;
 
                     }
 
                 }
-
-                dis.close();
-                s.close();
 
             }
 
