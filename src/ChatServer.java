@@ -23,9 +23,7 @@ public class ChatServer {
             while (!ss.isClosed()) {
 
                 Socket s = ss.accept();
-
                 Client c = new Client(s);
-
                 new Thread(c).start();
 
             }
@@ -45,6 +43,7 @@ public class ChatServer {
                 e.printStackTrace();
 
             }
+
         }
 
     }
@@ -66,7 +65,6 @@ public class ChatServer {
             try {
 
                 dis = new DataInputStream(s.getInputStream());
-
                 String nickName = dis.readUTF();
 
                 System.out.println(nickName  + " is online!");

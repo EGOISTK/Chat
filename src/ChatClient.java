@@ -59,7 +59,6 @@ public class ChatClient extends Frame {
         });
 
         launch.addActionListener(new LaunchListener());
-
         tf.addActionListener(new TFListener());
 
         setVisible(true);
@@ -104,6 +103,7 @@ public class ChatClient extends Frame {
             if (!launchName.getText().equals("")) {
 
                 nickName = launchName.getText();
+
                 setTitle("ChatClient-" + nickName);
                 connect();
 
@@ -137,7 +137,7 @@ public class ChatClient extends Frame {
         @Override
         public void actionPerformed(ActionEvent e) {
 
-            String str = tf.getText().trim();
+            String str = tf.getText();
 
             ta.setText(str);
             tf.setText("");
