@@ -6,17 +6,66 @@ import java.net.Socket;
 
 public class ChatServer {
 
+    private ServerSocket ss = null;
+
     public static void main(String[] args) {
+
+        new ChatServer().start();
+
+    }
+
+    private void start() {
 
         try {
 
-            ServerSocket ss = new ServerSocket(8888);
+            ss = new ServerSocket(8888);
 
-            while (true) {
+            while (!ss.isClosed()) {
 
                 Socket s = ss.accept();
 
-                DataInputStream dis = new DataInputStream(s.getInputStream());
+                Client c = new Client(s);
+
+                new Thread(c).start();
+
+            }
+
+        } catch (IOException e) {
+
+            e.printStackTrace();
+
+        } finally {
+
+            try {
+
+                ss.close();
+
+            } catch (IOException e) {
+
+                e.printStackTrace();
+
+            }
+        }
+
+    }
+
+    private class Client implements Runnable {
+
+        private Socket s = null;
+        DataInputStream dis = null;
+
+        private Client(Socket s) {
+
+            this.s = s;
+
+        }
+
+        @Override
+        public void run() {
+
+            try {
+
+                dis = new DataInputStream(s.getInputStream());
 
                 String nickName = dis.readUTF();
 
@@ -26,7 +75,7 @@ public class ChatServer {
 
                     try {
 
-                        System.out.println(dis.readUTF());
+                        System.out.println(nickName + ":" + dis.readUTF());
 
                     } catch (EOFException e) {
 
@@ -39,11 +88,11 @@ public class ChatServer {
 
                 }
 
+            } catch (IOException e) {
+
+                e.printStackTrace();
+
             }
-
-        } catch (IOException e) {
-
-            e.printStackTrace();
 
         }
 

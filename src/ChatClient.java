@@ -11,7 +11,12 @@ public class ChatClient extends Frame {
 
     private Socket s = null;
     private DataOutputStream dos = null;
-    private String nickName = null;
+    private String nickName;
+
+    {
+        nickName = null;
+    }
+
     private TextField launchName = new TextField();
     private Button launch = new Button("Launch");
     private TextField tf = new TextField();
