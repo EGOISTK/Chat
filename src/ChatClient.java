@@ -10,6 +10,7 @@ import java.net.Socket;
 public class ChatClient extends Frame {
 
     private Socket s = null;
+    private DataOutputStream dos = null;
     private String nickName = null;
     private TextField launchName = new TextField();
     private Button launch = new Button("Launch");
@@ -36,24 +37,24 @@ public class ChatClient extends Frame {
         add(launch, BorderLayout.SOUTH);
         pack();
 
-        launch.addActionListener(new LaunchListener());
-
         this.addWindowListener(new WindowAdapter() {
 
             @Override
             public void windowClosing(WindowEvent e) {
 
+                disconnect();
                 System.exit(0);
 
             }
 
         });
 
+        launch.addActionListener(new LaunchListener());
+
         tf.addActionListener(new TFListener());
 
         setVisible(true);
         setResizable(true);
-        connect();
 
     }
 
@@ -71,6 +72,21 @@ public class ChatClient extends Frame {
 
     }
 
+    private void disconnect() {
+
+        try {
+
+            dos.close();
+            s.close();
+
+        } catch (IOException e) {
+
+            e.printStackTrace();
+
+        }
+
+    }
+
     private class LaunchListener implements ActionListener {
 
         @Override
@@ -79,14 +95,14 @@ public class ChatClient extends Frame {
             if (!launchName.getText().equals("")) {
 
                 nickName = launchName.getText();
+                connect();
 
                 try {
 
-                    DataOutputStream dos = new DataOutputStream(s.getOutputStream());
+                    dos = new DataOutputStream(s.getOutputStream());
 
                     dos.writeUTF(nickName + " is launched!");
                     dos.flush();
-                    dos.close();
 
                 } catch (IOException e1) {
 
@@ -118,11 +134,10 @@ public class ChatClient extends Frame {
 
             try {
 
-                DataOutputStream dos = new DataOutputStream(s.getOutputStream());
+                dos = new DataOutputStream(s.getOutputStream());
 
                 dos.writeUTF(str);
                 dos.flush();
-                dos.close();
 
             } catch (IOException e1) {
 

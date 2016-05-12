@@ -17,7 +17,13 @@ public class ChatServer {
 
                 DataInputStream dis = new DataInputStream(s.getInputStream());
 
-                System.out.println(dis.readUTF());
+                while (!s.isInputShutdown()) {
+
+                    System.out.println(dis.readUTF());
+
+                }
+
+                dis.close();
 
             }
 
